@@ -2,15 +2,17 @@ import { useForm } from "react-hook-form";
 import "./App.css";
 
 interface FormData {
+  nome: string;
   email: string;
   senha: string;
 }
 
 function App() {
-  const { register, handleSubmit, watch } = useForm<FormData>();
-  const email = watch("email") || "";
-  const senha = watch("senha") || "";
-  const emailValido = email.includes("@");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
 
   const enviarDados = (data: FormData) => {
     console.log(data);
@@ -20,17 +22,38 @@ function App() {
     <>
       <form className="form" onSubmit={handleSubmit(enviarDados)}>
         <input
+          type="text"
+          placeholder="Nome"
+          {...register("nome", { required: "O nome é Obrigatório" })}
+        />
+        {errors.nome && <p style={{color: "red"}}>{errors.nome.message}</p>}
+
+        <input
           type="email"
           placeholder="Email"
-          {...register("email", { required: "O email é Obrigatório" })}
+          {...register("email", {
+            required: "O email é Obrigatório",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Formato de Email Inválido",
+            },
+          })}
         />
-        {!emailValido && email.length > 0 && (
-          <p style={{ color: "red" }}>Digite um Email Válido</p>
-        )}
-        <input type="password" placeholder="Senha" {...register("senha", {minLength: 5})} />
-        {senha.length > 0 && senha.length < 5 && (
-          <p style={{ color: "red" }}>Mínimo de 5 Caracteres</p>
-        )}
+        {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
+
+        <input
+          type="password"
+          placeholder="Senha"
+          {...register("senha", {
+            required: "A senha é obrigatória",
+            minLength: {
+              value: 6,
+              message: "Mínimo de 6 Caracteres",
+            },
+          })}
+        />
+        {errors.senha && <p style={{ color: "red" }}>{errors.senha.message}</p>}
+
         <button type="submit">Enviar</button>
       </form>
     </>

@@ -8,7 +8,6 @@
 form {
   display: flex;
   flex-direction: column;
-  gap: 30px;
 }
 
 input {
@@ -16,5 +15,10 @@ input {
   width: 500px;
   font-size: 25px;
   padding: 15px;
+  margin: 10px;
+}
+
+p {
+  margin: 0;
 }
 
