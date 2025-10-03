@@ -12,19 +12,38 @@ function App() {
   const {
     register,
     handleSubmit,
+    reset,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
       nome: "",
       sexo: "Masculino",
-      pais: "brasil",
+      pais: "Brasil",
       termos: false,
-    }
+    },
   });
 
   const enviarDados = (data: FormData) => {
     console.log(data);
   };
+
+  function resetar() {
+    return reset();
+  }
+
+  function preencher() {
+    setValue("nome", "Yãry");
+    setValue("sexo", "Masculino");
+    setValue("pais", "Brasil");
+    setValue("termos", true);
+  }
+
+  function mostrarValores(){
+    const valores = getValues();
+    console.log(valores)
+  }
 
   return (
     <>
@@ -58,9 +77,9 @@ function App() {
         </div>
 
         <select className="radio-group" {...register("pais")}>
-          <option value="brasil">Brasil</option>
-          <option value="portugal">Portugal</option>
-          <option value="espanha">Espanha</option>
+          <option value="Brasil">Brasil</option>
+          <option value="Portugal">Portugal</option>
+          <option value="Espanha">Espanha</option>
         </select>
 
         <div className="radio-group">
@@ -70,6 +89,9 @@ function App() {
 
         <button type="submit">Enviar</button>
       </form>
+      <button onClick={resetar}>resetar</button>
+      <button onClick={preencher}>preencher</button>
+      <button onClick={mostrarValores}>mostrar valores</button>
     </>
   );
 }
