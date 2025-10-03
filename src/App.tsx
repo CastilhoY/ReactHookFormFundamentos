@@ -3,6 +3,8 @@ import "./App.css";
 
 interface FormData {
   nome: string;
+  email: string;
+  senha: string;
   sexo: string;
   pais: string;
   termos: boolean;
@@ -19,6 +21,8 @@ function App() {
   } = useForm<FormData>({
     defaultValues: {
       nome: "",
+      email: "",
+      senha: "",
       sexo: "Masculino",
       pais: "Brasil",
       termos: false,
@@ -40,9 +44,9 @@ function App() {
     setValue("termos", true);
   }
 
-  function mostrarValores(){
+  function mostrarValores() {
     const valores = getValues();
-    console.log(valores)
+    console.log(valores);
   }
 
   return (
@@ -55,6 +59,34 @@ function App() {
           {...register("nome", { required: "O nome é Obrigatório" })}
         />
         {errors.nome && <p style={{ color: "red" }}>{errors.nome.message}</p>}
+
+        <input
+          type="email"
+          placeholder="Email"
+          className="inputText"
+          {...register("email", {
+            required: "O email é Obrigatório",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "Email Inválido",
+            },
+          })}
+        />
+        {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
+
+        <input
+          type="password"
+          placeholder="Senha"
+          className="inputText"
+          {...register("senha", {
+            required: "A Senha é Obrigatória",
+            minLength: {
+              value: 6,
+              message: "Mínimo 6 Caracteres"
+            }
+          })}
+        />
+        {errors.senha && <p style={{ color: "red" }}>{errors.senha.message}</p>}
 
         <div className="radio-group">
           <input
