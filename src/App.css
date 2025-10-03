@@ -10,9 +10,12 @@ form {
   flex-direction: column;
 }
 
-input {
+.inputText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 30px;
-  width: 500px;
+  max-width: 460px; width: 100%;
   font-size: 25px;
   padding: 15px;
   margin: 10px;
@@ -20,5 +23,14 @@ input {
 
 p {
   margin: 0;
+}
+
+.radio-group{
+  display: flex;
+  align-items: center;  
+  height: 40px;
+  width: 500px;
+  font-size: 25px;
+  padding: 5px;
 }
 
