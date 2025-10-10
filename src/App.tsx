@@ -6,12 +6,10 @@ import "./App.css";
 
 const schema = z.object({
   nome: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
-  produtos: z.array(
+  endereco: z.array(
     z.object({
-      nome: z
-        .string()
-        .min(3, "O nome do produto deve ter pelo menos 3 caracteres"),
-      quantidade: z.number().min(1, "A quantidade deve ser no mínimo 1"),
+      rua: z.string().min(3, "A rua deve ter pelo menos 3 caracteres"),
+      numero: z.number().min(1, "O número deve ser no mínimo 1"),
     })
   ),
 });
@@ -19,17 +17,23 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 function App() {
-  const { control, handleSubmit, register } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       nome: "",
-      produtos: [{ nome: "", quantidade: 0 }],
+      endereco: [{ rua: "", numero: 0 }],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "produtos",
+    name: "endereco",
   });
 
   const enviarDados = (data: FormData) => {
@@ -39,15 +43,24 @@ function App() {
   return (
     <>
       <form className="form" onSubmit={handleSubmit(enviarDados)}>
+        <input placeholder="Nome" {...register("nome")} />
+        {errors.nome && <p className="error">{errors.nome.message}</p>}
         {fields.map((field, index) => (
           <div key={field.id}>
-            <input placeholder="Produto" {...register(`produtos.${index}.nome`)} />
+            <input placeholder="Rua" {...register(`endereco.${index}.rua`)} />
+            {errors.endereco?.[index]?.rua?.message && (
+              <p className="error">{errors.endereco[index]?.rua?.message}</p>
+            )}
             <input
               type="number"
-              {...register(`produtos.${index}.quantidade`, {
+              {...register(`endereco.${index}.numero`, {
                 valueAsNumber: true,
               })}
             />
+            {errors.endereco?.[index]?.numero?.message && (
+              <p className="error">{errors.endereco[index]?.numero?.message}</p>
+            )}
+
             <button type="button" onClick={() => remove(index)}>
               Remover
             </button>
@@ -56,13 +69,27 @@ function App() {
 
         <button
           type="button"
-          onClick={() => append({
-            nome: "",
-            quantidade: 1,
-          })}
+          onClick={() =>
+            append({
+              rua: "",
+              numero: 1,
+            })
+          }
         >
-          Adicionar Produto
+          Adicionar Endereço
         </button>
+        <button
+          type="button"
+          onClick={() =>
+            reset({
+              nome: "",
+              endereco: [{ rua: "", numero: 0 }],
+            })
+          }
+        >
+          Resetar
+        </button>
+        <button type="submit">Enviar</button>
       </form>
     </>
   );
