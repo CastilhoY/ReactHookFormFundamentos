@@ -3,6 +3,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "./App.css";
+import FormNome from "../FormNome/FormNome";
+import EnderecoList from "../EnderecoList/EnderecoList";
 
 const schema = z.object({
   nome: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
@@ -14,7 +16,7 @@ const schema = z.object({
   ),
 });
 
-type FormData = z.infer<typeof schema>;
+export type FormData = z.infer<typeof schema>;
 
 function App() {
   const {
@@ -43,29 +45,18 @@ function App() {
   return (
     <>
       <form className="form" onSubmit={handleSubmit(enviarDados)}>
-        <input placeholder="Nome" {...register("nome")} />
-        {errors.nome && <p className="error">{errors.nome.message}</p>}
-        {fields.map((field, index) => (
-          <div key={field.id}>
-            <input placeholder="Rua" {...register(`endereco.${index}.rua`)} />
-            {errors.endereco?.[index]?.rua?.message && (
-              <p className="error">{errors.endereco[index]?.rua?.message}</p>
-            )}
-            <input
-              type="number"
-              {...register(`endereco.${index}.numero`, {
-                valueAsNumber: true,
-              })}
-            />
-            {errors.endereco?.[index]?.numero?.message && (
-              <p className="error">{errors.endereco[index]?.numero?.message}</p>
-            )}
+        <FormNome
+          placeholder="Nome"
+          register={register("nome")}
+          error={errors.nome?.message}
+        />
 
-            <button type="button" onClick={() => remove(index)}>
-              Remover
-            </button>
-          </div>
-        ))}
+        <EnderecoList
+          fields={fields}
+          register={register}
+          errors={errors}
+          remove={remove}
+        />
 
         <button
           type="button"
@@ -78,6 +69,7 @@ function App() {
         >
           Adicionar Endereço
         </button>
+
         <button
           type="button"
           onClick={() =>
@@ -89,6 +81,7 @@ function App() {
         >
           Resetar
         </button>
+
         <button type="submit">Enviar</button>
       </form>
     </>
